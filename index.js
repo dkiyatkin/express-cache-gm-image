@@ -7,6 +7,13 @@ const gm = require('gm')
 const mime = require('mime')
 
 function updateImage (origFsPath, cacheFsPath, query, cb) {
+  query.w = parseInt(query.w) || null
+  query.h = parseInt(query.h) || null
+  query.f = parseInt(query.f)
+  query.c = parseInt(query.c)
+  query.x = parseInt(query.x) || 0
+  query.y = parseInt(query.y) || 0
+  query.r = parseInt(query.r)
   if (query.f) query.f = '!'
   if ((query.r && !query.c) || (!query.c && !query.r)) { // resize default
     gm(origFsPath)
@@ -60,7 +67,7 @@ function ImagerMiddleware ({root, cacheDir, staticOptions, nextFunction}) {
         if (err) return newNextFunction() // файл не найден 404
         fs.stat(cacheFsPath, function (err, cacheStats) {
           if (err || origStats.mtime.getTime() > cacheStats.mtime.getTime()) {
-            updateImage(origFsPath, cacheFsPath, req.query, function (err) {
+            updateImage(origFsPath, cacheFsPath, Object.assign({}, req.query), function (err) {
               if (err) return next(err)
               req.url = cacheUrlPath
               expressStatic(req, res, newNextFunction)
