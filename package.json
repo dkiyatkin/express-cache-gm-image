@@ -1,0 +1,42 @@
+{
+  "name": "express-cache-gm-image",
+  "version": "0.0.3",
+  "description": "Express middleware to resize and crop pictures from url parameters with gm, cache and express.static",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublish": "[ -r ~/.gitignore_global ] && cat ~/.gitignore_global > .npmignore"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dkiyatkin/express-cache-gm-image.git"
+  },
+  "keywords": [
+    "express",
+    "image",
+    "resize",
+    "gm",
+    "cache",
+    "static",
+    "middleware"
+  ],
+  "author": "Dmitriy Kiyatkin <info@dkiyatkin.com> (http://dkiyatkin.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dkiyatkin/express-cache-gm-image/issues"
+  },
+  "homepage": "https://github.com/dkiyatkin/express-cache-gm-image#readme",
+  "dependencies": {
+    "express": "^4.14.0",
+    "gm": "^1.23.0",
+    "mime": "^1.3.4",
+    "mkdirp": "^0.5.1"
+  },
+  "devDependencies": {
+    "babel-eslint": "^6.1.2",
+    "eslint": "^3.2.2",
+    "eslint-config-standard": "^5.3.5",
+    "eslint-plugin-promise": "^2.0.1",
+    "eslint-plugin-standard": "^2.0.0"
+  }
+}
