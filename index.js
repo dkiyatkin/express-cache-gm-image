@@ -7,13 +7,15 @@ const gm = require('gm')
 const mime = require('mime')
 
 function updateImage (origFsPath, cacheFsPath, query, cb) {
-  query.w = parseInt(query.w) || null
-  query.h = parseInt(query.h) || null
-  query.f = parseInt(query.f)
-  query.c = parseInt(query.c)
-  query.x = parseInt(query.x) || 0
-  query.y = parseInt(query.y) || 0
-  query.r = parseInt(query.r)
+  query = {
+    w: parseInt(query.w) || 0,
+    h: parseInt(query.h) || 0,
+    c: parseInt(query.c) || 0,
+    f: parseInt(query.f) || 0,
+    x: parseInt(query.x) || 0,
+    y: parseInt(query.y) || 0,
+    r: parseInt(query.r) || 0,
+  }
   if (query.f) query.f = '!'
   if ((query.r && !query.c) || (!query.c && !query.r)) { // resize default
     gm(origFsPath)
@@ -44,23 +46,16 @@ function ImagerMiddleware ({root, cacheDir, staticOptions, nextFunction}) {
     if (!Object.keys(req.query).length) return next()
     if (!(req.query.w || req.query.h)) return next()
     const origUrlPath = req.params[0]
-    if (mime.lookup(origUrlPath).split('/')[0] !== 'image') return next() // должно быть изображение
-    const extname = p.extname(origUrlPath)
+    if (mime.getType(origUrlPath).split('/')[0] !== 'image') return next() // должно быть изображение
+    const basename = p.basename(origUrlPath)
     const origFsPath = p.join(root, origUrlPath)
-
-    const cachePathFromOrigUrlPath = origUrlPath.replace(/\//g, '|')
-    let name = ''
-    if (req.query.w) { name += 'w' + req.query.w }
-    if (req.query.h) { name += 'h' + req.query.h }
-    if (req.query.f) { name += 'f' + req.query.f }
-    if (req.query.c) { name += 'c' + req.query.c }
-    if (req.query.x) { name += 'x' + req.query.x }
-    if (req.query.y) { name += 'y' + req.query.y }
-    if (req.query.r) { name += 'r' + req.query.r }
-    const cacheDirToFile = p.join(cacheDir, cachePathFromOrigUrlPath)
+    const cachePathFromOrigUrlPath = p.dirname(origUrlPath)
+    const queryindex = req.originalUrl.indexOf('?')
+    const queryname = req.originalUrl.slice(queryindex + 1)
+    const cacheDirToFile = p.join(cacheDir, queryname, cachePathFromOrigUrlPath)
     mkdirp(cacheDirToFile, function (err) {
       if (err) return next(err)
-      const cacheUrlPath = p.join(cachePathFromOrigUrlPath, name + extname)
+      const cacheUrlPath = p.join(queryname, cachePathFromOrigUrlPath, basename)
       const cacheFsPath = p.join(cacheDir, cacheUrlPath)
 
       fs.stat(origFsPath, function (err, origStats) {

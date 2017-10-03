@@ -2,8 +2,9 @@
 Express middleware to resize and crop pictures from url parameters with gm, cache and express.static.
 
 # Example
-http://127.0.0.1:3000/images/example.png?w=50&h=100&r=1&c=2&f=1&y=20
+Url: `http://127.0.0.1:3000/images/example.png?w=50&h=100&r=1&c=2&f=1&y=20`
 
+Node.js code:
 ```javascript
 import express from 'express'
 
@@ -19,7 +20,7 @@ const app = express()
 
 app.get('/*', ImageMiddleware({
   root: './public',
-  cacheDir: './cache/imager',
+  cacheDir: './public/cache/imager',
   staticOptions: staticOptions,
   nextFunction: function (req, res) {
     return res.status(404).send('Not Found')
@@ -29,4 +30,20 @@ app.get('/*', ImageMiddleware({
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!')
 })
+```
+
+Nginx config:
+```nginx
+location ^~ /cache {
+  deny all;
+  return 404;
+}
+
+location ~* .(png|jpg|jpe?g)$ {
+  root /var/www/site/cache/imager;
+  if ($is_args = '') {
+    root /var/www/site;
+  }
+  try_files /$args/$uri @node;
+}
 ```
