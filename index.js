@@ -8,8 +8,8 @@ const mime = require('mime')
 
 function updateImage (origFsPath, cacheFsPath, query, cb) {
   query = {
-    w: parseInt(query.w) || 0,
-    h: parseInt(query.h) || 0,
+    w: parseInt(query.w) || null,
+    h: parseInt(query.h) || null,
     c: parseInt(query.c) || 0,
     f: parseInt(query.f) || 0,
     x: parseInt(query.x) || 0,

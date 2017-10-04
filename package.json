@@ -1,6 +1,6 @@
 {
   "name": "express-cache-gm-image",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Express middleware to resize and crop pictures from url parameters with gm, cache and express.static",
   "main": "index.js",
   "scripts": {
